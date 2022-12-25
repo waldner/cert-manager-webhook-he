@@ -1,0 +1,7 @@
+{
+  "credentialsSecretRef": {
+    "name": "he-credentials"
+  },
+  "heUrl": "https://dns.he.net",
+  "method": "login"
+}
