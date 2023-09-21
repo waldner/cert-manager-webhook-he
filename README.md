@@ -16,7 +16,7 @@ To install with helm from the registry, run:
 
 ```bash
 # to use secrets for credentials:
-$ helm upgrade --install --namespace cert-maanger --set auth.useSecrets=true cert-manager-webhook-he oci://ghcr.io/waldner/charts/cert-manager-webhook-he
+$ helm upgrade --install --namespace cert-manager --set auth.useSecrets=true cert-manager-webhook-he oci://ghcr.io/waldner/charts/cert-manager-webhook-he
 
 # to use environment variables
 $ helm upgrade --install --namespace cert-manager \
