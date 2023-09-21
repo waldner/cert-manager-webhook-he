@@ -62,7 +62,7 @@ environment variables (the default) or from kubernetes `Secret`s.
 
 The main difference is that credentials passed via environment variables are static
 and can only be changed by redeploying the container, while credentials stored
-in secrets can be updated by just updating the secrets (or creating now ones),
+in secrets can be updated by just updating the secrets (or creating new ones),
 then referencing them from the `Issuer`.
 
 If you want to use multiple accounts, or be able to set per-issuer credentials,
@@ -108,19 +108,19 @@ kind: Issuer
 ...
   solvers:
     - dns01:
-      webhook:
-        solverName: he
-        groupName: acme.xdb.me
-        config:
-          heUrl: "https://dns.he.net"   # URL for operations. Default (and probably the only valid value): "https://dns.he.net"
-          method: "login"               # method to use. "login" is also the default
-          # only if you use secrets
-          credentialsSecretRef:
-            name: "my-secret"           # name of secret. Default: "he-credentials"
-            namespace: "myns"           # optional namespace for the secret. If not given, the secret is
-                                        # looked for in the issuer namespace.
-                                        # For a ClusterIssuer, specify this or the release namespace (eg,
-                                        # `cert-manager`) will be used.
+        webhook:
+          solverName: he
+          groupName: acme.xdb.me
+          config:
+            heUrl: "https://dns.he.net"   # URL for operations. Default (and probably the only valid value): "https://dns.he.net"
+            method: "login"               # method to use. "login" is also the default
+            # only if you use secrets
+            credentialsSecretRef:
+              name: "my-secret"           # name of secret. Default: "he-credentials"
+              namespace: "myns"           # optional namespace for the secret. If not given, the secret is
+                                          # looked for in the issuer namespace.
+                                          # For a ClusterIssuer, specify this or the release namespace (eg,
+                                          # `cert-manager`) will be used.
 ```
 
 
@@ -165,20 +165,20 @@ kind: Issuer
 ...
   solvers:
     - dns01:
-      webhook:
-        solverName: he
-        groupName: acme.xdb.me
-        config:
-          heUrl: "https://dyn.dns.he.net" # URL for operations. Default: "https://dyn.dns.he.net"
-          method: "dynamic-dns"           # method to use.
+        webhook:
+          solverName: he
+          groupName: acme.xdb.me
+          config:
+            heUrl: "https://dyn.dns.he.net" # URL for operations. Default: "https://dyn.dns.he.net"
+            method: "dynamic-dns"           # method to use.
 
-          # Only if you use secrets
-          apiKeySecretRef:
-            name: "my-secret"             # name of secret. Default: "he-credentials"
-            namespace: "myns"             # optional namespace for the secret. If not given, the secret is
-                                          # looked for in the issuer namespace.
-                                          # For a ClusterIssuer, specify this or the release namespace (eg,
-                                          # `cert-manager`) will be used.
+            # Only if you use secrets
+            apiKeySecretRef:
+              name: "my-secret"             # name of secret. Default: "he-credentials"
+              namespace: "myns"             # optional namespace for the secret. If not given, the secret is
+                                            # looked for in the issuer namespace.
+                                            # For a ClusterIssuer, specify this or the release namespace (eg,
+                                            # `cert-manager`) will be used.
 ```
 
 ### Access control for secrets
