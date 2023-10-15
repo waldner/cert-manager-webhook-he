@@ -1,6 +1,6 @@
 module github.com/waldner/cert-manager-webhook-he
 
-go 1.19
+go 1.21
 
 replace cloud.google.com/go => cloud.google.com/go v0.107.0
 
