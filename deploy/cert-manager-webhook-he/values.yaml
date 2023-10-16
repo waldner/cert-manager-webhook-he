@@ -12,7 +12,7 @@ certManager:
   serviceAccountName: cert-manager
 image:
   repository: ghcr.io/waldner/cert-manager-webhook-he
-  tag: 0.0.1
+  tag: 0.0.2
   pullPolicy: IfNotPresent
 nameOverride: ""
 fullnameOverride: ""
