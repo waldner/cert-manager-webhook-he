@@ -26,10 +26,10 @@ jobs:
           echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install helm
-        uses: Azure/setup-helm@v3
+        uses: Azure/setup-helm@v4
         with:
           version: v${{ env.HELM_VERSION }}
 
@@ -44,7 +44,7 @@ jobs:
     steps:
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 
 
@@ -93,7 +93,7 @@ jobs:
           helm push ${CHART_NAME}-${{ steps.bump-chart-semver.outputs.new_version }}.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts
 
       - name: Commit changed files
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: "${{ env.CHART_DIR }}/*"
           commit_message: "Autoupdate: image tag (values.yaml) to ${{ steps.image-tag.outputs.tag }}, chart tag (Chart.yaml) to ${{ steps.bump-chart-semver.outputs.new_version }}"

@@ -27,10 +27,10 @@ jobs:
           echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: 1.21
 
@@ -44,7 +44,7 @@ jobs:
         run: TEST_ZONE_NAME=${{ secrets.HE_ZONE }}. make test
     
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to the Container registry
         if: inputs.event_name != 'pull_request'
@@ -64,7 +64,7 @@ jobs:
           DRY_RUN: true
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
