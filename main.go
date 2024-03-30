@@ -172,6 +172,8 @@ func loadConfig(cfgJSON *extapi.JSON) (heProviderConfig, error) {
 
 func (c *heProviderSolver) initConfig(ch *v1alpha1.ChallengeRequest) (*utils.HeClient, error) {
 
+        // stupid comment to trigger the github actions workflow
+
 	cfg, err := loadConfig(ch.Config)
 	if err != nil {
 		return nil, err

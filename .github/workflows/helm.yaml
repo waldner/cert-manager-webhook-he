@@ -66,7 +66,8 @@ jobs:
           cmd: yq -r .version "$CHART_DIR/Chart.yaml"
         
       - name: bump chart version
-        uses: actions-ecosystem/action-bump-semver@v1
+        #uses: actions-ecosystem/action-bump-semver@v1
+        uses: fiddlermikey/action-bump-semver@master
         id: bump-chart-semver
         with:
           current_version: ${{ steps.chart-get-semver.outputs.result }}
