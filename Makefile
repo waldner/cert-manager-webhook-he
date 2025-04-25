@@ -3,7 +3,7 @@ ARCH ?= $(shell go env GOARCH)
 
 # not used
 IMAGE_NAME := "mmoerz/cert-manager-webhook-he"
-IMAGE_TAG := "0.0.5"
+IMAGE_TAG := "0.0.6"
 
 OUT := $(shell pwd)/_out
 
