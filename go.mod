@@ -1,4 +1,4 @@
-module github.com/waldner/cert-manager-webhook-he
+module github.com/mmoerz/cert-manager-webhook-he
 
 go 1.21
 

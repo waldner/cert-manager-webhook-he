@@ -1,8 +1,8 @@
 # `cert-Manager` ACME DNS01 Webhook Solver for HE DNS
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/waldner/cert-manager-webhook-he)](https://goreportcard.com/report/github.com/waldner/cert-manager-webhook-he)
-[![Releases](https://img.shields.io/github/v/tag/waldner/cert-manager-webhook-he)](https://github.com/waldner/cert-manager-webhook-he/tags)
-[![LICENSE](https://img.shields.io/github/license/waldner/cert-manager-webhook-he)](https://github.com/waldner/cert-manager-webhook-he/blob/master/LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mmoerz/cert-manager-webhook-he)](https://goreportcard.com/report/github.com/mmoerz/cert-manager-webhook-he)
+[![Releases](https://img.shields.io/github/v/tag/mmoerz/cert-manager-webhook-he)](https://github.com/mmoerz/cert-manager-webhook-he/tags)
+[![LICENSE](https://img.shields.io/github/license/mmoerz/cert-manager-webhook-he)](https://github.com/mmoerz/cert-manager-webhook-he/blob/master/LICENSE)
 
 A webhook to use [HE DNS](https://dns.he.net) as a DNS01 ACME Issuer for [cert-manager](https://github.com/jetstack/cert-manager).
 
@@ -18,20 +18,20 @@ To install with helm from the registry, run:
 
 ```bash
 # to use secrets for credentials:
-$ helm upgrade --install --namespace cert-manager --set auth.useSecrets=true cert-manager-webhook-he oci://ghcr.io/waldner/charts/cert-manager-webhook-he
+$ helm upgrade --install --namespace cert-manager --set auth.useSecrets=true cert-manager-webhook-he oci://ghcr.io/mmoerz/charts/cert-manager-webhook-he
 
 # to use environment variables
 $ helm upgrade --install --namespace cert-manager \
    --set auth.heUsername=myusername \
    --set auth.hePassword=mypassword \
    --set auth.heApiKey=myapikey \
-   cert-manager-webhook-he oci://ghcr.io/waldner/charts/cert-manager-webhook-he
+   cert-manager-webhook-he oci://ghcr.io/mmoerz/charts/cert-manager-webhook-he
 ```
 
 If you want to install from the repo checkout:
 
 ```bash
-$ git clone https://github.com/waldner/cert-manager-webhook-he.git
+$ git clone https://github.com/mmoerz/cert-manager-webhook-he.git
 $ cd cert-manager-webhook-he
 
 # to use secrets for credentials:
