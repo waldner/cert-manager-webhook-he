@@ -47,18 +47,24 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 
+          
+      - name: Get last image tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
 
-      - name: Get current image tag
-        id: image-tag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        with:
-          fallback: 0.1.0
+      - name: Stripping v from version tag
+        id: stripped-latest-tag
+        run: |
+          thetag = "{{ steps.get-latest-tag.outputs.tag }}"
+          version = "${thetag/v//}"
+          echo "Version: ${version}"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Set image version in chart
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.image.tag = "${{ steps.image-tag.outputs.tag }}"' "$CHART_DIR/values.yaml"
-
+          cmd: yq -i '.image.tag = "${{ steps.stripped-latest-tag.outputs.tag }}"' "$CHART_DIR/values.yaml"
+      
       - name: Discover helm chart version
         id: chart-get-semver
         uses: mikefarah/yq@master
