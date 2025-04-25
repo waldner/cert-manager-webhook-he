@@ -8,6 +8,7 @@ IMAGE_TAG := "0.0.5"
 OUT := $(shell pwd)/_out
 
 KUBE_VERSION=1.30.0
+LINT_KUBE_VERSION=1.32.0
 
 USE_SECRETS ?= false
 HE_USERNAME ?= ""
@@ -51,5 +52,5 @@ rendered-manifest.yaml:
 
 lint:
 	helm lint \
-	--kube-version 1.32.0 \
+	--kube-version $(LINT_KUBE_VERSION) \
 	deploy/cert-manager-webhook-he

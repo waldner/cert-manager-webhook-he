@@ -12,7 +12,7 @@ certManager:
   serviceAccountName: cert-manager
 image:
   repository: ghcr.io/waldner/cert-manager-webhook-he
-  tag: 0.0.5
+  tag: 0.0.6
   pullPolicy: IfNotPresent
 nameOverride: ""
 fullnameOverride: ""
@@ -36,7 +36,8 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 auth:
-  useSecrets: false
+  # ugly hack - hardcode the use of secrets
+  useSecrets: true
   # override these if `useSecrets` is false
   heUsername: ""
   hePassword: ""
