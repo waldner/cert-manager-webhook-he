@@ -1,0 +1,100 @@
+name: "Helm test, build, push"
+
+on:
+  workflow_call:
+    inputs:
+      event_name:
+        type: string
+        required: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  HELM_VERSION: 3.10.0
+  CHART_DIR: deploy/cert-manager-webhook-he/
+  CHART_NAME: cert-manager-webhook-he
+
+jobs:
+  helm-test:
+    runs-on: ubuntu-latest
+    steps:
+
+      # debug
+      - run: |
+          echo "This job was triggered by this event: ${{ github.event_name }}"
+          echo "This job is running on ${{ runner.os }}"
+          echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: install helm
+        uses: Azure/setup-helm@v4
+        with:
+          version: v${{ env.HELM_VERSION }}
+
+      - name: Run helm lint
+        run: helm lint $CHART_DIR
+
+  helm-package-release:
+    needs: helm-test
+    if: inputs.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Get current image tag
+        id: image-tag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: 0.0.0
+
+      - name: Set image version in chart
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.image.tag = "${{ steps.image-tag.outputs.tag }}"' "$CHART_DIR/values.yaml"
+
+      - name: Discover helm chart version
+        id: chart-get-semver
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -r .version "$CHART_DIR/Chart.yaml"
+        
+      - name: bump chart version
+        #uses: actions-ecosystem/action-bump-semver@v1
+        uses: fiddlermikey/action-bump-semver@main
+        id: bump-chart-semver
+        with:
+          current_version: ${{ steps.chart-get-semver.outputs.result }}
+          level: patch
+
+      - name: Update chart version in Chart.yaml
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.version = "${{ steps.bump-chart-semver.outputs.new_version }}"' "$CHART_DIR/Chart.yaml"
+
+      - name: Log in to the Container registry
+        if: github.ref_type != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create helm package
+        run: helm package $CHART_DIR
+
+      - name: Push helm package to OCI registry
+        run: |
+          helm push ${CHART_NAME}-${{ steps.bump-chart-semver.outputs.new_version }}.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts
+
+      - name: Commit changed files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          file_pattern: "${{ env.CHART_DIR }}/*"
+          commit_message: "Autoupdate: image tag (values.yaml) to ${{ steps.image-tag.outputs.tag }}, chart tag (Chart.yaml) to ${{ steps.bump-chart-semver.outputs.new_version }}"
