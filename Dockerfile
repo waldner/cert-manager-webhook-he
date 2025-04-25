@@ -1,4 +1,5 @@
-# multi-stage build 
+# multi-stage build
+# stage1: fetch libraries
 FROM golang:1.21-alpine AS build_deps
 
 RUN apk add --no-cache git
