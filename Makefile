@@ -2,12 +2,12 @@ OS ?= $(shell go env GOOS)
 ARCH ?= $(shell go env GOARCH)
 
 # not used
-IMAGE_NAME := "waldner/cert-manager-webhook-he"
-IMAGE_TAG := "0.0.1"
+IMAGE_NAME := "mmoerz/cert-manager-webhook-he"
+IMAGE_TAG := "0.0.5"
 
 OUT := $(shell pwd)/_out
 
-KUBE_VERSION=1.24.1
+KUBE_VERSION=1.30.0
 
 USE_SECRETS ?= false
 HE_USERNAME ?= ""
@@ -49,3 +49,7 @@ rendered-manifest.yaml:
   	  --set auth.heApiKey=$(HE_APIKEY) \
       deploy/cert-manager-webhook-he > "$(OUT)/rendered-manifest.yaml"
 
+lint:
+	helm lint \
+	--kube-version 1.32.0 \
+	deploy/cert-manager-webhook-he

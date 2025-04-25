@@ -6,6 +6,8 @@
 
 A webhook to use [HE DNS](https://dns.he.net) as a DNS01 ACME Issuer for [cert-manager](https://github.com/jetstack/cert-manager).
 
+MMoerz: Trying to modify it so that fluxCD can work with the helm chart.
+
 
 ## Installation
 
@@ -244,3 +246,13 @@ VERBOSE=1 TEST_ZONE_NAME=yourdomain.com. make test
 ```
 
 Have a look at `main_test.go` in case you want to customize the test suite.
+
+### Notes for fluxCD compatibility
+I suppose the schema error on deploy results from a missing helm json validation schema see: [Validating Helm Charts](http://www.arthurkoziel.com/validate-helm-chart-values-with-json-schemas/)
+
+a working schema generator:
+[liquid-technologies](https://www.liquid-technologies.com/online-json-to-schema-converter)
+
+get helm:
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh

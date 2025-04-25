@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "groupName": {
+      "type": "string"
+    },
+    "certManager": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string"
+        },
+        "serviceAccountName": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true,
+      "required": [
+        "namespace",
+        "serviceAccountName"
+      ]
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "pullPolicy": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true,
+      "required": [
+        "repository",
+        "tag",
+        "pullPolicy"
+      ]
+    },
+    "nameOverride": {
+      "type": "string"
+    },
+    "fullnameOverride": {
+      "type": "string"
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": true,
+      "required": [
+        "type",
+        "port"
+      ]
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "items": {},
+      "additionalItems": true
+    },
+    "nodeSelector": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "tolerations": {
+      "type": "array",
+      "items": {},
+      "additionalItems": true
+    },
+    "affinity": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "useSecrets": {
+          "type": "boolean"
+        },
+        "heUsername": {
+          "type": "string"
+        },
+        "hePassword": {
+          "type": "string"
+        },
+        "heApiKey": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true,
+      "required": [
+        "useSecrets",
+        "heUsername",
+        "hePassword",
+        "heApiKey"
+      ]
+    },
+    "rbac": {
+      "type": "object",
+      "properties": {
+        "secretNamespaces": {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            }
+          ],
+          "additionalItems": true
+        },
+        "secretNames": {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            }
+          ],
+          "additionalItems": true
+        }
+      },
+      "additionalProperties": true,
+      "required": [
+        "secretNamespaces",
+        "secretNames"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "required": [
+    "groupName",
+    "certManager",
+    "image",
+    "nameOverride",
+    "fullnameOverride",
+    "service",
+    "resources",
+    "imagePullSecrets",
+    "nodeSelector",
+    "tolerations",
+    "affinity",
+    "auth",
+    "rbac"
+  ]
+}
