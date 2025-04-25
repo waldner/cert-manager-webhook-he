@@ -12,7 +12,7 @@ certManager:
   serviceAccountName: cert-manager
 image:
   repository: ghcr.io/mmoerz/cert-manager-webhook-he
-  tag: 0.0.0
+  tag: v0.1.0
   pullPolicy: IfNotPresent
 nameOverride: ""
 fullnameOverride: ""
