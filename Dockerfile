@@ -10,12 +10,14 @@ COPY go.sum .
 
 RUN go mod download
 
+# stage 2: image build binary
 FROM build_deps AS build
 
 COPY . .
 
 RUN CGO_ENABLED=0 go build -o webhook -ldflags '-w -extldflags "-static"' .
 
+# stage3: run executable
 FROM alpine:3.15
 
 RUN apk add --no-cache ca-certificates

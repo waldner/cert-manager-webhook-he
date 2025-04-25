@@ -52,7 +52,7 @@ jobs:
         id: image-tag
         uses: WyriHaximus/github-action-get-previous-tag@v1
         with:
-          fallback: 0.0.0
+          fallback: 0.1.0
 
       - name: Set image version in chart
         uses: mikefarah/yq@master
