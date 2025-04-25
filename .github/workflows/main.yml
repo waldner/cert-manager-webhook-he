@@ -49,7 +49,7 @@ jobs:
     with:
       event_name: ${{ github.event_name }}
     secrets: inherit
-    uses: mmoerz/cert-manager-webhook-he/.github/workflows/docker-publish.yaml@master
+    uses: mmoerz/cert-manager-webhook-he/.github/workflows/docker-publish.yml@master
 
   helm:
     needs: [changes,docker]
@@ -58,4 +58,4 @@ jobs:
     with:
       event_name: ${{ github.event_name }}
     secrets: inherit
-    uses: mmoerz/cert-manager-webhook-he/.github/workflows/helm-deploy.yaml@master
+    uses: mmoerz/cert-manager-webhook-he/.github/workflows/helm-deploy.yml@master
