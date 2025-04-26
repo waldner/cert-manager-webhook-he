@@ -1,0 +1,47 @@
+# This workflow will triage pull requests and apply a label based on the
+# paths that are modified in the pull request.
+#
+# To use this workflow, you will need to set up a .github/labeler.yml
+# file with configuration.  For more information, see:
+# https://github.com/actions/labeler
+
+name: Labeler
+on: [pull_request_target]
+
+jobs:
+  label:
+    
+    runs-on: ubuntu-latest
+    name: Labelling
+    outputs:
+      docker: ${{ steps.label-the-PR.outputs.all-labels }}
+      helm: ${{ steps.label-the-PR.outputs.all-labels }}
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+    - name: Label the pull-request
+      id: label-the-PR
+      uses: actions/labeler@v4
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        
+  docker:
+    needs: [label]
+    # run job if there were actual changes in docker files
+    if: contains(needs.label.outputs.docker, 'Docker')
+    with:
+      event_name: ${{ github.event_name }}
+    secrets: inherit
+    uses: mmoerz/cert-manager-webhook-he/.github/workflows/docker-test.yml@master
+
+  helm:
+    needs: [label,docker]
+    # run job if there were actual changes in docker or helm files
+    if: contains(needs.label.outputs.docker, 'Helm')
+    with:
+      event_name: ${{ github.event_name }}
+    secrets: inherit
+    uses: mmoerz/cert-manager-webhook-he/.github/workflows/helm-test.yml@master
+        
