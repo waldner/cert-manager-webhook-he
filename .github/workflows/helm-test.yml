@@ -1,0 +1,38 @@
+name: "Helm test"
+
+on:
+  workflow_call:
+    inputs:
+      event_name:
+        type: string
+        required: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  HELM_VERSION: 3.10.0
+  CHART_DIR: deploy/cert-manager-webhook-he/
+  CHART_NAME: cert-manager-webhook-he
+
+jobs:
+  helm-test:
+    runs-on: ubuntu-latest
+    steps:
+
+      # debug
+      - run: |
+          echo "This job was triggered by this event: ${{ github.event_name }}"
+          echo "This job is running on ${{ runner.os }}"
+          echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: install helm
+        uses: Azure/setup-helm@v4
+        with:
+          version: v${{ env.HELM_VERSION }}
+
+      - name: Run helm lint
+        run: make lint
+

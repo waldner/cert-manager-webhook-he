@@ -8,5 +8,10 @@ Docker:
     - 'Dockerfile'
 Helm:
   - any-glob-to-any-file:
+    - '**.go'
+    - 'testdata/docker/*'
+    - 'go.mod'
+    - 'go.sum'
+    - 'Dockerfile'
     - 'testdata/helm/*'
-    - 'deploy/**
+    - 'deploy/**'

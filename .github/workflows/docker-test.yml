@@ -1,0 +1,64 @@
+name: "Docker Test"
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+on:
+  workflow_call:
+    inputs:
+      event_name:
+        type: string
+        required: true
+  push:
+    branches: [ "master" ]
+    # Publish semver tags as releases.
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    steps:
+
+      # debug
+      - run: |
+          echo "This job was triggered by this event: ${{ github.event_name }}"
+          echo "This job is running on ${{ runner.os }}"
+          echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
+      
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+
+      # no tests at the moment, since secret is default now, user,pwd will not work
+      - name: Set up secret file
+        env:
+          HE_USERNAME: ${{ secrets.HE_USERNAME }}
+          HE_PASSWORD: ${{ secrets.HE_PASSWORD }}
+        run: sed "s/%%HE_USERNAME%%/${HE_USERNAME}/; s/%%HE_PASSWORD%%/${HE_PASSWORD}/" testdata/he/secret.yaml.example > testdata/he/secret.yaml
+
+      - name: Run tests
+        run: TEST_ZONE_NAME=${{ secrets.HE_ZONE }}. make test
+
