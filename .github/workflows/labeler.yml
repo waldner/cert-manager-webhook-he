@@ -1,0 +1,12 @@
+Docker:
+- changed-files:
+  - any-glob-to-any-file:
+    - '**.go'
+    - 'testdata/docker/*'
+    - 'go.mod'
+    - 'go.sum'
+    - 'Dockerfile'
+Helm:
+  - any-glob-to-any-file:
+    - 'testdata/helm/*'
+    - 'deploy/**
