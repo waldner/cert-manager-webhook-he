@@ -56,7 +56,7 @@ jobs:
         id: stripped-latest-tag
         run: |
           thetag = "{{ steps.get-latest-tag.outputs.tag }}"
-          version = "${thetag/v//}"
+          version = "${thetag//v/}"
           echo "Version: ${version}"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
