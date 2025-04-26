@@ -27,12 +27,12 @@ jobs:
         with:
           base: master
           filters: |
-            docker:
-              - '**.go'
-              - 'testdata/**'
-              - 'go.mod'
-              - 'go.sum'
-              - 'Dockerfile'
+            #docker:
+            #  - '**.go'
+            #  - 'testdata/**'
+            #  - 'go.mod'
+            #  - 'go.sum'
+            #  - 'Dockerfile'
             helm:
               - '**.go'
               - 'testdata/**'
@@ -45,9 +45,9 @@ jobs:
   docker:
     needs: [changes]
     # run job if there were actual changes
-    if: needs.changes.outputs.docker == 'true'
-    with:
-      event_name: ${{ github.event_name }}
+    #if: needs.changes.outputs.docker == 'true'
+    #with:
+    #  event_name: ${{ github.event_name }}
     secrets: inherit
     uses: mmoerz/cert-manager-webhook-he/.github/workflows/docker-publish.yml@master
 

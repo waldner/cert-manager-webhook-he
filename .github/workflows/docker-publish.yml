@@ -47,6 +47,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+
+      - name: Only pull requests can get through
+        uses: actions-ecosystem/action-release-label@v1
+        id: release-label
+        if: ${{ github.event.pull_request.merged == true }}
+
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
