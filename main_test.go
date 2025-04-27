@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cert-manager/cert-manager/test/acme/dns"
 	"k8s.io/klog/v2"
+
+	acmetest "github.com/cert-manager/cert-manager/test/acme"
 )
 
 var (
@@ -29,15 +30,19 @@ func TestRunsSuiteLogin(t *testing.T) {
 	// ChallengeRequest passed as part of the test cases.
 
 	// Uncomment the below fixture when implementing your custom DNS provider
-	fixture := dns.NewFixture(&heProviderSolver{},
-		dns.SetResolvedZone(zone),
-		dns.SetAllowAmbientCredentials(false),
-		dns.SetManifestPath("testdata/he"),
-		dns.SetDNSServer("ns1.he.net:53"),
-		dns.SetStrict(true),
-		dns.SetPropagationLimit(1800*time.Second),
-		dns.SetResolvedFQDN("_acme-challenge-test."+zone),
+	fixture := acmetest.NewFixture(&heProviderSolver{},
+		acmetest.SetResolvedZone(zone),
+		acmetest.SetAllowAmbientCredentials(false),
+		acmetest.SetManifestPath("testdata/he"),
+		acmetest.SetDNSServer("ns1.he.net:53"),
+		acmetest.SetStrict(true),
+		acmetest.SetPropagationLimit(1800*time.Second),
+		acmetest.SetResolvedFQDN("_acme-challenge-test."+zone),
 	)
 
-	fixture.RunConformance(t)
+	//need to uncomment and  RunConformance delete runBasic and runExtended once https://github.com/cert-manager/cert-manager/pull/4835 is merged
+	//fixture.RunConformance(t)
+	fixture.RunBasic(t)
+	fixture.RunExtended(t)
+
 }

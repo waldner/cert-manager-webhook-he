@@ -233,14 +233,14 @@ under `testdata/he`.
 Once the files are in place, run the test suite with:
 
 ```bash
-TEST_ZONE_NAME=yourdomain.com. make test
+USE_SECRETS=true TEST_ZONE_NAME=yourdomain.com. make test
 ```
 
 You can also set `VERBOSE=1` (or to any other nonempty value) to see debug messages
 (note that this increases verbosity for all components):
 
 ```bash
-VERBOSE=1 TEST_ZONE_NAME=yourdomain.com. make test
+VERBOSE=1 USE_SECRETS=1 TEST_ZONE_NAME=yourdomain.com. make test
 ```
 
 Have a look at `main_test.go` in case you want to customize the test suite.

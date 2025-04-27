@@ -1,51 +1,45 @@
-OS ?= $(shell go env GOOS)
-ARCH ?= $(shell go env GOARCH)
+GO ?= $(shell which go)
+OS ?= $(shell $(GO) env GOOS)
+ARCH ?= $(shell $(GO) env GOARCH)
 
-# not used
-IMAGE_NAME := "waldner/cert-manager-webhook-he"
-IMAGE_TAG := "0.0.1"
+IMAGE_NAME := "webhook"
+IMAGE_TAG := "latest"
 
 OUT := $(shell pwd)/_out
 
-KUBE_VERSION=1.24.1
+KUBEBUILDER_VERSION=1.28.0
 
-USE_SECRETS ?= false
-HE_USERNAME ?= ""
-HE_PASSWORD ?= ""
-HE_APIKEY ?= "" 
+HELM_FILES := $(shell find deploy/cert-manager-webhook-he)
 
-$(shell mkdir -p "$(OUT)")
-export TEST_ASSET_ETCD=_test/kubebuilder/bin/etcd
-export TEST_ASSET_KUBE_APISERVER=_test/kubebuilder/bin/kube-apiserver
-export TEST_ASSET_KUBECTL=_test/kubebuilder/bin/kubectl
+test: _test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/etcd _test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/kube-apiserver _test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/kubectl
+	TEST_ASSET_ETCD=_test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/etcd \
+	TEST_ASSET_KUBE_APISERVER=_test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/kube-apiserver \
+	TEST_ASSET_KUBECTL=_test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/kubectl \
+	$(GO) test -v .
 
-test: _test/kubebuilder
-	USE_SECRETS=true go test -v .
+_test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH).tar.gz: | _test
+	curl -fsSL https://go.kubebuilder.io/test-tools/$(KUBEBUILDER_VERSION)/$(OS)/$(ARCH) -o $@
 
-_test/kubebuilder:
-	curl -fsSL https://go.kubebuilder.io/test-tools/$(KUBE_VERSION)/$(OS)/$(ARCH) -o kubebuilder-tools.tar.gz
-	mkdir -p _test/kubebuilder
-	tar -xvf kubebuilder-tools.tar.gz
-	mv kubebuilder/bin _test/kubebuilder/
-	rm kubebuilder-tools.tar.gz
-	rm -R kubebuilder
+_test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/etcd _test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/kube-apiserver _test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)/kubectl: _test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH).tar.gz | _test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH)
+	tar xfO $< kubebuilder/bin/$(notdir $@) > $@ && chmod +x $@
 
-clean: clean-kubebuilder
+.PHONY: clean
+clean:
+	rm -r _test $(OUT)
 
-clean-kubebuilder:
-	rm -Rf _test/kubebuilder
-
+.PHONY: build
 build:
 	docker build -t "$(IMAGE_NAME):$(IMAGE_TAG)" .
 
 .PHONY: rendered-manifest.yaml
-rendered-manifest.yaml:
-	helm template \
-      --set image.repository=$(IMAGE_NAME) \
-      --set image.tag=$(IMAGE_TAG) \
-	  --set auth.useSecrets=$(USE_SECRETS) \
-	  --set auth.heUsername=$(HE_USERNAME) \
- 	  --set auth.hePassword=$(HE_PASSWORD) \
-  	  --set auth.heApiKey=$(HE_APIKEY) \
-      deploy/cert-manager-webhook-he > "$(OUT)/rendered-manifest.yaml"
+rendered-manifest.yaml: $(OUT)/rendered-manifest.yaml
 
+$(OUT)/rendered-manifest.yaml: $(HELM_FILES) | $(OUT)
+	helm template \
+	    --name cert-manager-webhook-he \
+            --set image.repository=$(IMAGE_NAME) \
+            --set image.tag=$(IMAGE_TAG) \
+            deploy/cert-manager-webhook-he > $@
+
+_test $(OUT) _test/kubebuilder-$(KUBEBUILDER_VERSION)-$(OS)-$(ARCH):
+	mkdir -p $@

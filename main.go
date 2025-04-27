@@ -39,6 +39,7 @@ func main() {
 	)
 }
 
+
 // heProviderSolver implements the provider-specific logic needed to
 // 'present' an ACME challenge TXT record for your own DNS provider.
 // To do so, it must implement the `github.com/cert-manager/cert-manager/pkg/acme/webhook.Solver`
@@ -66,6 +67,12 @@ type secretRef struct {
 // This typically includes references to Secret resources containing DNS
 // provider credentials, in cases where a 'multi-tenant' DNS solver is being
 // created.
+// If you do *not* require per-issuer or per-certificate configuration to be
+// provided to your webhook, you can skip decoding altogether in favour of
+// using CLI flags or similar to provide configuration.
+// You should not include sensitive information here. If credentials need to
+// be used by your provider here, you should reference a Kubernetes Secret
+// resource and fetch these credentials using a Kubernetes clientset.
 type heProviderConfig struct {
 	// Depending on the method used, some of these fields will be empty/unused
 	CredentialsSecretRef secretRef `json:"credentialsSecretRef"`
@@ -227,7 +234,6 @@ func (c *heProviderSolver) initConfig(ch *v1alpha1.ChallengeRequest) (*utils.HeC
 		Jar: jar,
 	}
 	heClient.Client = client
-
 	klog.V(4).InfoS("Generated config", "heClient", heClient)
 
 	return heClient, nil
