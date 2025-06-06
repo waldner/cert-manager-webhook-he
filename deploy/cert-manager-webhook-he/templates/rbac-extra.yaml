@@ -1,0 +1,9 @@
+{{- if .Values.auth.useSecrets }}
+{{- if .Values.rbac.secretNamespaces }}
+{{- range $namespace := .Values.rbac.secretNamespaces }}
+{{ include "cert-manager-webhook-he.secretReaderRole" (list $ "role" $namespace) }}
+{{- end }}
+{{- else }}
+{{ include "cert-manager-webhook-he.secretReaderRole" (list $ "clusterrole" "") }}
+{{- end }}
+{{- end }}
